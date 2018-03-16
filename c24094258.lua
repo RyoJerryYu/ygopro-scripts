@@ -6,6 +6,7 @@ function c24094258.initial_effect(c)
 	--to extra
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(24094258,0))
+	e1:SetCategory(CATEGORY_TOEXTRA)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
@@ -46,6 +47,7 @@ function c24094258.tefilter(c)
 end
 function c24094258.tetg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c24094258.tefilter,tp,LOCATION_DECK,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TOEXTRA,nil,1,tp,LOCATION_DECK)
 end
 function c24094258.teop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(24094258,3))
@@ -83,10 +85,13 @@ function c24094258.drcfilter(c,tp)
 	return c:IsPreviousLocation(LOCATION_PZONE) and c:GetPreviousControler()==tp
 end
 function c24094258.drcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(c24094258.drcfilter,1,nil,tp)
+	if eg:IsExists(c24094258.drcfilter,1,nil,tp) then
+		e:SetLabel(tp)
+		return true
+	else return false end
 end
 function c24094258.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
+	if chk==0 then return e:GetLabel()==tp end
 	Duel.SetTargetPlayer(tp)
 	Duel.SetTargetParam(1)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
